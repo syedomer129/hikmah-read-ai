@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { BookOpen, Clock, MoreVertical, Play, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,8 +25,13 @@ interface BookCardProps {
 }
 
 export const BookCard = ({ book }: BookCardProps) => {
+  const navigate = useNavigate();
   const [showChatModal, setShowChatModal] = useState(false);
   const [showAudioPlayer, setShowAudioPlayer] = useState(false);
+
+  const handleReadBook = () => {
+    navigate('/reader', { state: { book } });
+  };
 
   return (
     <>
@@ -62,7 +68,7 @@ export const BookCard = ({ book }: BookCardProps) => {
                 variant="hero" 
                 size="sm" 
                 className="w-full"
-                onClick={() => setShowAudioPlayer(true)}
+                onClick={handleReadBook}
               >
                 <Play className="w-3 h-3 mr-2" />
                 Continue Reading
