@@ -28,6 +28,9 @@ interface PdfToolbarProps {
   onViewModeChange: (mode: ViewMode) => void;
   onBack?: () => void;
   loading?: boolean;
+  onFullBookAction?: (action: 'translate' | 'summarize') => void;
+  onOpenChat?: () => void;
+  onOpenAudio?: () => void;
 }
 
 export const PdfToolbar = ({
@@ -39,7 +42,10 @@ export const PdfToolbar = ({
   onZoomChange,
   onViewModeChange,
   onBack,
-  loading = false
+  loading = false,
+  onFullBookAction,
+  onOpenChat,
+  onOpenAudio
 }: PdfToolbarProps) => {
   const [pageInput, setPageInput] = useState<string>(currentPage.toString());
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -68,11 +74,11 @@ export const PdfToolbar = ({
       transition={{ duration: 0.2 }}
     >
       <div className="flex items-center justify-between gap-4">
-        {/* Left Section - Navigation */}
+        {/* Left Section - Navigation & AI Controls */}
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={onBack} className="gap-2">
             <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Library</span>
+            <span className="hidden sm:inline">Exit</span>
           </Button>
           
           <Separator orientation="vertical" className="h-6" />
@@ -83,10 +89,79 @@ export const PdfToolbar = ({
               Document.pdf
             </span>
           </div>
-          
-          <Button variant="ghost" size="icon-sm">
-            <Settings className="h-4 w-4" />
-          </Button>
+
+          <Separator orientation="vertical" className="h-6" />
+
+          {/* AI Model Selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Model:</span>
+            <Select defaultValue="gemini">
+              <SelectTrigger className="w-32 h-8 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="gemini">Gemini 1.5 Flash</SelectItem>
+                <SelectItem value="gpt4">GPT-4</SelectItem>
+                <SelectItem value="claude">Claude 3 Haiku</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Language Selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Language:</span>
+            <Select defaultValue="english">
+              <SelectTrigger className="w-24 h-8 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="english">English</SelectItem>
+                <SelectItem value="urdu">Urdu</SelectItem>
+                <SelectItem value="hindi">Hindi</SelectItem>
+                <SelectItem value="arabic">Arabic</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Full Book Actions */}
+          <Separator orientation="vertical" className="h-6" />
+          <div className="flex items-center gap-1">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="gap-1 text-xs"
+              onClick={() => onFullBookAction?.('translate')}
+            >
+              🌐 Translate Full
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="gap-1 text-xs"
+              onClick={() => onFullBookAction?.('summarize')}
+            >
+              📚 Summarize Full
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="gap-1 text-xs"
+              onClick={() => onOpenChat?.()}
+            >
+              💬 Chat
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="gap-1 text-xs"
+              onClick={() => onOpenAudio?.()}
+            >
+              🔊 Audio
+            </Button>
+            <Button variant="ghost" size="sm" className="gap-1 text-xs opacity-50">
+              🎬 Video
+            </Button>
+          </div>
         </div>
 
         {/* Center Section - Page Controls */}
